@@ -1,4 +1,4 @@
-package org.ssa.ironyard.database;
+package org.ssa.ironyard.database.a1;
 
 public class Customer
 {

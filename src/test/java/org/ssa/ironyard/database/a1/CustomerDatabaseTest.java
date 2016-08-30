@@ -1,4 +1,4 @@
-package org.ssa.ironyard.database;
+package org.ssa.ironyard.database.a1;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.ssa.ironyard.database.a1.Customer;
+import org.ssa.ironyard.database.a1.CustomerDatabase;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 
