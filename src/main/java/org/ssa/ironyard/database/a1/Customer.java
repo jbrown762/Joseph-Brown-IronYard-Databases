@@ -5,7 +5,12 @@ public class Customer
 
     String first;
     String last;
-    final int id;
+    int id;
+
+    public Customer()
+    {
+        id = -1;
+    }
 
     public Customer(String first, String last)
     {
@@ -13,7 +18,7 @@ public class Customer
         this.last = last;
         this.id = -1;
     }
-    
+
     public Customer(String first, String last, int id)
     {
         this.first = first;
@@ -25,15 +30,30 @@ public class Customer
     {
         return first;
     }
-    
+
     public String getLast()
     {
         return last;
     }
-    
+
     public int getId()
     {
         return id;
+    }
+
+    public void setFirst(String first)
+    {
+        this.first = first;
+    }
+
+    public void setLast(String last)
+    {
+        this.last = last;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
     }
 
     @Override
@@ -79,6 +99,5 @@ public class Customer
     {
         return "Customer [first=" + first + ", last=" + last + ", id=" + id + "]";
     }
-    
-    
+
 }

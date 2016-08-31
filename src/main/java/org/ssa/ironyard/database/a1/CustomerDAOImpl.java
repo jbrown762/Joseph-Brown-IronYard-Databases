@@ -12,15 +12,16 @@ import javax.sql.DataSource;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 
-public class CustomerDatabase implements CustomerDAO
+public class CustomerDAOImpl implements CustomerDAO
 {
 
     DataSource datasource;
-    Connection connection;
-
-    public CustomerDatabase(MysqlDataSource mysqlDataSource) throws SQLException
+    final CustomerORM orm = new CustomerORM()
     {
-        this.connection = mysqlDataSource.getConnection();
+    };
+
+    public CustomerDAOImpl(MysqlDataSource mysqlDataSource) throws SQLException
+    {
         this.datasource = mysqlDataSource;
     }
 
@@ -28,15 +29,18 @@ public class CustomerDatabase implements CustomerDAO
     {
         try
         {
-            PreparedStatement prepareStatement = this.connection
-                    .prepareStatement("INSERT INTO customers(first, last) VALUE(?,?)", Statement.RETURN_GENERATED_KEYS);
+            Connection connection = datasource.getConnection();
+
+            PreparedStatement prepareStatement = connection.prepareStatement(orm.prepareInsert(),
+                    Statement.RETURN_GENERATED_KEYS);
             prepareStatement.setString(1, customer.getFirst());
             prepareStatement.setString(2, customer.getLast());
-            prepareStatement.executeUpdate();
-            ResultSet generatedKeys = prepareStatement.getGeneratedKeys();
-            generatedKeys.next();
-            return new Customer(customer.getFirst(), customer.getLast(), generatedKeys.getInt(1));
-
+            if (prepareStatement.executeUpdate() == 1)
+            {
+                ResultSet generatedKeys = prepareStatement.getGeneratedKeys();
+                if (generatedKeys.next())
+                    return new Customer(customer.getFirst(), customer.getLast(), generatedKeys.getInt(1));
+            }
         } catch (Exception e)
         {
 
@@ -48,11 +52,11 @@ public class CustomerDatabase implements CustomerDAO
     {
         try
         {
-            PreparedStatement prepareStatement = this.connection
-                    .prepareStatement("DELETE FROM customers WHERE first = ? AND last = ? AND id = ?");
-            prepareStatement.setString(1, toDelete.getFirst());
-            prepareStatement.setString(2, toDelete.getLast());
-            prepareStatement.setInt(3, toDelete.getId());
+            Connection connection = datasource.getConnection();
+
+            PreparedStatement prepareStatement = connection.prepareStatement(orm.prepareDelete());
+
+            prepareStatement.setInt(1, toDelete.getId());
             if (prepareStatement.executeUpdate() == 1)
                 return true;
         } catch (Exception e)
@@ -66,25 +70,28 @@ public class CustomerDatabase implements CustomerDAO
     {
         try
         {
-            PreparedStatement prepareStatement = this.connection
-                    .prepareStatement("UPDATE customers SET first = ? AND last = ? WHERE id = ?");
+            Connection connection = datasource.getConnection();
+
+            PreparedStatement prepareStatement = connection
+                    .prepareStatement(orm.prepareUpdate());
             prepareStatement.setString(1, customer.getFirst());
             prepareStatement.setString(2, customer.getLast());
             prepareStatement.setInt(3, customer.getId());
-            prepareStatement.executeUpdate();
+            if (prepareStatement.executeUpdate() == 1)
+                return new Customer(customer.getFirst(), customer.getLast(), customer.getId());
         } catch (Exception e)
         {
-
         }
-        return new Customer(customer.getFirst(), customer.getLast(), customer.getId());
+        return null;
     }
 
     public Customer read(int id)
     {
         try
         {
-            PreparedStatement prepareStatement = this.connection
-                    .prepareStatement("SELECT * FROM customers WHERE id = ?");
+            Connection connection = datasource.getConnection();
+
+            PreparedStatement prepareStatement = connection.prepareStatement(orm.prepareRead());
             prepareStatement.setInt(1, id);
             ResultSet results = prepareStatement.executeQuery();
             if (results.next())
@@ -102,7 +109,9 @@ public class CustomerDatabase implements CustomerDAO
 
         try
         {
-            PreparedStatement prepareStatement = this.connection.prepareStatement("SELECT * FROM customers");
+            Connection connection = datasource.getConnection();
+
+            PreparedStatement prepareStatement = connection.prepareStatement("SELECT first, last, id FROM customers");
             ResultSet results = prepareStatement.executeQuery();
             while (results.next())
                 customers
@@ -121,8 +130,9 @@ public class CustomerDatabase implements CustomerDAO
 
         try
         {
-            PreparedStatement prepareStatement = this.connection
-                    .prepareStatement("SELECT * FROM customers WHERE first = ?");
+            Connection connection = datasource.getConnection();
+
+            PreparedStatement prepareStatement = connection.prepareStatement("SELECT * FROM customers WHERE first = ?");
             prepareStatement.setString(1, firstName);
             ResultSet results = prepareStatement.executeQuery();
             while (results.next())
@@ -143,8 +153,9 @@ public class CustomerDatabase implements CustomerDAO
 
         try
         {
-            PreparedStatement prepareStatement = this.connection
-                    .prepareStatement("SELECT * FROM customers WHERE last = ?");
+            Connection connection = datasource.getConnection();
+
+            PreparedStatement prepareStatement = connection.prepareStatement("SELECT * FROM customers WHERE last = ?");
             prepareStatement.setString(1, lastName);
             ResultSet results = prepareStatement.executeQuery();
             while (results.next())
@@ -162,8 +173,9 @@ public class CustomerDatabase implements CustomerDAO
     {
         try
         {
-            PreparedStatement prepareStatement = this.connection
-                    .prepareStatement("DELETE FROM customers");
+            Connection connection = datasource.getConnection();
+
+            PreparedStatement prepareStatement = connection.prepareStatement("DELETE FROM customers");
             return prepareStatement.executeUpdate();
         } catch (Exception e)
         {
