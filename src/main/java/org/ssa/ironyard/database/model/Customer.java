@@ -1,6 +1,6 @@
-package org.ssa.ironyard.database.a1;
+package org.ssa.ironyard.database.model;
 
-public class Customer
+public class Customer implements DomainObject
 {
 
     String first;
@@ -36,7 +36,7 @@ public class Customer
         return last;
     }
 
-    public int getId()
+    public Integer getId()
     {
         return id;
     }
@@ -77,27 +77,57 @@ public class Customer
         if (getClass() != obj.getClass())
             return false;
         Customer other = (Customer) obj;
-        if (first == null)
-        {
-            if (other.first != null)
-                return false;
-        } else if (!first.equals(other.first))
-            return false;
+
         if (id != other.id)
             return false;
-        if (last == null)
-        {
-            if (other.last != null)
-                return false;
-        } else if (!last.equals(other.last))
-            return false;
+
         return true;
     }
+    
+   
 
+    @Override
+    public boolean deeplyEquals(Object obj) {
+    if (this == obj)
+        return true;
+    if (obj == null)
+        return false;
+    if (getClass() != obj.getClass())
+        return false;
+    Customer other = (Customer) obj;
+    if (first == null) {
+        if (other.first != null)
+        return false;
+    } else if (!first.equals(other.first))
+        return false;
+    if (id != other.id)
+        return false;
+    if (last == null) {
+        if (other.last != null)
+        return false;
+    } else if (!last.equals(other.last))
+        return false;
+    return true;
+    }
+
+    
     @Override
     public String toString()
     {
         return "Customer [first=" + first + ", last=" + last + ", id=" + id + "]";
+    }
+
+    @Override
+    public Customer clone() throws CloneNotSupportedException
+    {
+        try
+        {
+            Customer copy = (Customer) super.clone();
+            return copy;
+        } catch (CloneNotSupportedException ex)
+        {
+            return null;
+        }
     }
 
 }

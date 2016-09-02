@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.ssa.ironyard.database.a1.Customer;
+import org.ssa.ironyard.database.dao.customer.CustomerDAO;
+import org.ssa.ironyard.database.dao.customer.CustomerDAOImpl;
+import org.ssa.ironyard.database.model.Customer;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 
@@ -31,34 +33,6 @@ public class CustomerDatabaseTest
         // db.clear();
     }
 
-    // @Test
-    public void test() throws SQLException
-    {
-        Customer thurston = db.insert(new Customer("Thur", "Ston"));
-
-        assertEquals(new Customer("Thur", "Ston", 35), thurston);
-
-        assertTrue(db.delete(new Customer("Joe", "Brown", 28)));
-        assertEquals(null, db.read(28));
-
-        assertFalse(db.delete(new Customer("Joe", "Brown", 30)));
-
-        assertEquals(new Customer("J", "B", 13), db.read(13));
-
-        assertEquals(19, db.read().size());
-        assertEquals(2, db.readLastName("Ston").size());
-        assertEquals(16, db.readFirstName("Joe").size());
-
-        System.out.println(db.read());
-        System.out.println(db.readLastName("Ston"));
-        System.out.println(db.readFirstName("Joe"));
-
-        // !!! UNCOMMENT TO CLEAR DATABASE !!!
-        //
-        // db.clear();
-        // assertEquals(0, db.read().size());
-
-    }
 
     @Test
     public void read() throws SQLException
@@ -96,6 +70,6 @@ public class CustomerDatabaseTest
         Customer c1 = db.insert(new Customer("Test", "Customer"));
         assertTrue(c1.getId() > 0);
         Customer c1updated = db.update(new Customer("Updated", "Customer", c1.getId()));
-        //assertFalse(db.read(c1updated.getId()).equals(db.read(c1.getId())));
+        assertFalse(db.read(c1updated.getId()).equals(db.read(c1.getId())));
     }
 }

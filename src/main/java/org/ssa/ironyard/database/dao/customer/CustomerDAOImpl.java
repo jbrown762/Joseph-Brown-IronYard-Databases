@@ -1,4 +1,4 @@
-package org.ssa.ironyard.database.a1;
+package org.ssa.ironyard.database.dao.customer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
+
+import org.ssa.ironyard.database.model.Customer;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 

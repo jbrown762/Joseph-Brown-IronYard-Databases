@@ -1,6 +1,8 @@
-package org.ssa.ironyard.database.a1;
+package org.ssa.ironyard.database.dao.customer;
 
 import java.sql.ResultSet;
+
+import org.ssa.ironyard.database.model.Customer;
 
 public class CustomerORMImpl implements CustomerORM
 {
