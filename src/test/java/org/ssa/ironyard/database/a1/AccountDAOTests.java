@@ -21,7 +21,6 @@ public class AccountDAOTests
     static String URL = "jdbc:mysql://localhost/ssa_bank?" + "user=root&password=root" + "&useServerPrepStmt=true";
     AccountDAO accounts;
     CustomerDAOImpl customers;
-    // AccountORM orm;
 
     @Before
     public void setup() throws SQLException

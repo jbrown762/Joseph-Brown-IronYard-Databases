@@ -30,8 +30,7 @@ public class AccountDAO extends AbstractDAO<Account>
         {
             connection = datasource.getConnection();
 
-            prepareStatement = connection.prepareStatement(
-                    orm.prepareInsert(), Statement.RETURN_GENERATED_KEYS);
+            prepareStatement = connection.prepareStatement(orm.prepareInsert(), Statement.RETURN_GENERATED_KEYS);
 
             prepareStatement.setInt(1, domain.getCustomer().getId());
             prepareStatement.setString(2, domain.getType().abbrev);
@@ -41,16 +40,14 @@ public class AccountDAO extends AbstractDAO<Account>
             {
                 generatedKeys = prepareStatement.getGeneratedKeys();
                 generatedKeys.next();
-                
-                {
-                    Account a = new Account();
-                    a.setCustomer(domain.getCustomer());
-                    a.setBalance(domain.getBalance());
-                    a.setId(generatedKeys.getInt(1));
-                    a.setType(domain.getType());
-                    a.setLoaded(true);
-                    return a;
-                }
+
+                Account a = new Account();
+                a.setCustomer(domain.getCustomer());
+                a.setBalance(domain.getBalance());
+                a.setId(generatedKeys.getInt(1));
+                a.setType(domain.getType());
+                a.setLoaded(true);
+                return a;
             }
         } catch (Exception e)
         {

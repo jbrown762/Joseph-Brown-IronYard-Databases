@@ -25,26 +25,32 @@ public interface AccountORM extends ORM<Account>
     @Override
     default String prepareInsert()
     {
-        return "INSERT INTO " + table() + "(customer, type, balance) VALUES(?, ?, ?)"; 
+        return "INSERT INTO " + table() + "(customer, type, balance) VALUES(?, ?, ?)";
     }
 
     @Override
     default String prepareRead()
     {
-        return "SELECT " + projection() + " FROM " + table() + " INNER JOIN customers ON accounts.customer=customers.id WHERE accounts.id = ?";
+        return "SELECT " + projection() + " FROM " + table() + " WHERE id = ?";
     }
+
+//    @Override
+//    default String prepareRead()
+//    {
+//        return "SELECT " + projection() + " FROM " + table()
+//                + " INNER JOIN customers ON accounts.customer=customers.id WHERE accounts.id = ?";
+//    }
 
     @Override
     default String projection()
     {
-        return "account.id, customer, type, balance, first, last ";
+        return "id, customer, type, balance ";
     }
 
     @Override
     default String prepareUpdate()
     {
-        return "UPDATE " + table() + " SET customer = ?, type = ?, balance = ? " +
-               "WHERE id = ?";
+        return "UPDATE " + table() + " SET customer = ?, type = ?, balance = ? " + "WHERE id = ?";
     }
 
     @Override
@@ -57,14 +63,9 @@ public interface AccountORM extends ORM<Account>
         Customer customer = new Customer();
         account.setCustomer(customer);
         customer.setId(results.getInt("customer"));
-        customer.setFirst(results.getString("first"));
-        customer.setLast(results.getString("last"));
 
-        
         account.setLoaded(true);
         return account;
     }
-
-
 
 }
